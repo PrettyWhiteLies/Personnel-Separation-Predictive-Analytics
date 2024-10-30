@@ -1,0 +1,14 @@
+Age
+Relationship status
+Years of working experience
+Years within current field of employment
+Salary
+avg Hours worked per week
+Value of benefits/allowance provided
+Unpaid Overtime hours per week
+Years in current role
+Years with current supervisor
+number of employee in company
+last salary adjustment percentage
+average Travel on work percentage
+Company satisfaction
