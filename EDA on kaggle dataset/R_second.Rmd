@@ -1,0 +1,323 @@
+---
+title: "R_second"
+author: "junheng YU"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+
+```{R}
+install.packages("ROSE")
+library(ROSE)
+library(randomForest)
+library(ggplot2)
+
+```
+
+```{r }
+data_1 <- read.csv(file="D:/MAST90106/pythonProject/train.csv")
+head(data_1)
+label_counts_1 <- table(data_1$Label)
+label_counts_1
+label_counts_df_1 <- as.data.frame(label_counts_1)
+label_counts_df_1
+```
+
+```{R}
+# Rename the columns for better readability
+colnames(label_counts_df_1) <- c("Attrition", "Count")
+label_counts_df_1$Percentage <- label_counts_df_1$Count / sum(label_counts_df_1$Count) * 100
+
+# Create custom labels that include both the count and percentage
+label_counts_df_1$Label <- paste0(label_counts_df_1$Attrition, ": ", label_counts_df_1$Count, " (", round(label_counts_df_1$Percentage, 1), "%)")
+
+
+# Plot the pie chart
+ggplot(label_counts_df_1, aes(x = "", y = Count, fill = Attrition)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar(theta = "y") +
+  labs(title = "Attrition Distribution data 1", x = "", y = "") +
+  theme_void() +  # Remove background, grid, and axis marks
+  theme(legend.title = element_blank()) + # Remove legend title+
+  geom_text(aes(label = Label), position = position_stack(vjust = 0.5), color = "white", size = 5)
+```
+
+
+
+```{R}
+data_2<-read.csv(file='./WA_Fn-UseC_-HR-Employee-Attrition.csv')
+data_2$Attrition <- ifelse(data_2$Attrition == "Yes", 1, 0)
+
+label_counts_2 <- table(data_2$Attrition)
+label_counts_2
+```
+
+```{R}
+# Convert the table to a data frame
+label_counts_df_2 <- as.data.frame(label_counts_2)
+label_counts_df_2
+```
+
+```{R}
+# Rename the columns for better readability
+colnames(label_counts_df_2) <- c("Attrition", "Count")# Calculate the percentage of each category
+label_counts_df_2$Percentage <- label_counts_df_2$Count / sum(label_counts_df_2$Count) * 100
+
+# Create custom labels that include both the count and percentage
+label_counts_df_2$Label <- paste0(label_counts_df_2$Attrition, ": ", label_counts_df_2$Count, " (", round(label_counts_df_2$Percentage, 1), "%)")
+
+# Plot the pie chart with custom labels
+ggplot(label_counts_df_2, aes(x = "", y = Count, fill = Attrition)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar(theta = "y") +
+  labs(title = "Attrition Distribution data 2", x = "", y = "") +
+  theme_void() +  # Remove background, grid, and axis marks
+  theme(legend.title = element_blank()) +  # Remove legend title
+  geom_text(aes(label = Label), position = position_stack(vjust = 0.5), color = "white", size = 5)
+```
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+```{R}
+# 进行过采样
+oversampled_data_1 <- ovun.sample(Label ~ ., data = data_1, method = "over", N = nrow(data_1) * 1.7)$data
+
+# 查看过采样后的数据
+summary(oversampled_data_1$Label)
+label_counts <- table(oversampled_data_1$Label)
+label_counts
+
+```
+
+```{R}
+# 拆分数据为训练集和测试集
+set.seed(88) # 设置种子以确保结果可重复
+oversampled_data_1$Label <- as.factor(oversampled_data_1$Label)
+train_index_1 <- sample(nrow(oversampled_data_1), 0.7 * nrow(oversampled_data_1)) # 70% 的数据作为训练集
+train_data_1 <- oversampled_data_1[train_index_1, ]
+test_data_1 <- oversampled_data_1[-train_index_1, ]
+
+# 使用随机森林模型进行拟合
+rf_model_1 <- randomForest(Label ~ ., data = train_data_1)
+
+# 在测试集上进行预测
+predicted_labels_1 <- predict(rf_model_1, test_data_1)
+# 计算模型的准确率
+accuracy_1 <- sum(predicted_labels_1 == test_data_1$Label) / nrow(test_data_1)
+accuracy_1
+label_counts <- table(train_data_1$Label)
+label_counts
+label_counts_test <- table(test_data_1$Label)
+label_counts_test
+```
+
+```{R}
+import_1<-importance(rf_model_1)
+varImpPlot(rf_model_1)
+```
+
+```{R}
+importance_df_1 <- data.frame(Feature = rownames(import_1), Importance = import_1)
+
+sorted_importance_1 <- importance_df_1[order(importance_df_1$MeanDecreaseGini, decreasing = TRUE), ]
+
+
+print(sorted_importance_1)
+```
+
+```{R}
+library(ggplot2)
+```
+
+```{R}
+total_gini <- sum(importance_df_1$MeanDecreaseGini)
+importance_df_1$Percentage <- importance_df_1$MeanDecreaseGini / total_gini * 100
+sorted_importance_1 <- importance_df_1[order(importance_df_1$MeanDecreaseGini, decreasing = TRUE), ]
+top_20_importance <- head(sorted_importance_1, 34)
+
+ggplot(top_20_importance, aes(x = reorder(Feature, Percentage), y = Percentage, fill = Feature)) +
+  geom_bar(stat = "identity",fill='blue') +
+  coord_flip() +  # Flip coordinates to make the chart horizontal
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +  # Format y-axis as percentage
+  labs(title = "", x = "Feature", y = "Importance (%)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+
+```{R}
+# 使用 ggplot 函数创建图形对象，并指定数据集和x、y映射
+ggplot(sorted_importance_1, aes(x = reorder(Feature, -MeanDecreaseGini), y = MeanDecreaseGini)) +
+  # 添加条形图层，颜色为蓝色
+  geom_bar(stat = "identity", fill = "skyblue") +
+  # 添加标题和标签
+  labs(title = "Feature Importance", x = "Feature", y = "Importance") +
+  # 将x轴标签旋转45度以避免重叠
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{R}
+n=nrow(sorted_importance_1)
+feature=c("Label")
+acc_1 <- numeric(0)
+for (i in seq(n-1, 3, by = -1)) {
+    feature_im<-sorted_importance_1$Feature
+    feature=c(feature_im[i:n],feature)
+    
+    x_1_drop<-train_data_1[,!colnames(train_data_1)%in% feature]
+    y_1_drop<-train_data_1$Label
+    
+    rf_model <- randomForest(x = x_1_drop, y = y_1_drop)
+    X_test_1_drop <- test_data_1[, !colnames(test_data_1) %in% feature]
+    y_test_1_drop <- test_data_1$Label 
+    
+    predictions_1_drop <- predict(rf_model, X_test_1_drop)
+    accuracy_1_drop <- mean(predictions_1_drop == y_test_1_drop)
+    print(paste("Accuracy:", accuracy_1_drop))
+    acc_1<-c(acc_1,accuracy_1_drop)
+}
+```
+
+```{R}
+y_lower=min(acc_1)
+y_upper=max(acc_1)
+barplot(acc_1, names.arg = 1:length(acc_1), col = "skyblue",
+        main = "Accuracy", xlab = "Number", ylab = "Accuracy",ylim = c(y_lower, y_upper))
+```
+
+```{R}
+df_acc_1 <- data.frame(Index = 1:length(acc_1), Value = acc_1)
+
+ggplot(df_acc_1, aes(x = Index, y = Value)) +
+  geom_line(color = "blue") +  # Draw a line plot
+  geom_point(color = "blue", size = 3) +  # Add points to the plot
+  scale_x_continuous(breaks = df_acc_1$Index) +  # Set x-axis breaks to show all indices
+  labs(title = "",
+       x = "Number of feature",
+       y = "Accuracy") +
+  theme_minimal()
+```
+
+
+
+```{R}
+library(ROSE)
+# 进行过采样
+oversampled_data_2 <- ovun.sample(Attrition ~ ., data = data_2, method = "over", N = nrow(data_2) * 1.7)$data
+
+# 查看过采样后的数据
+summary(oversampled_data_2$Attrition)
+label_counts_2 <- table(oversampled_data_2$Attrition)
+label_counts_2
+
+```
+
+```{R}
+library(randomForest)
+# 拆分数据为训练集和测试集
+set.seed(88) # 设置种子以确保结果可重复
+oversampled_data_2$Attrition <- as.factor(oversampled_data_2$Attrition)
+train_index_2 <- sample(nrow(oversampled_data_2), 0.7 * nrow(oversampled_data_2)) # 70% 的数据作为训练集
+train_data_2 <- oversampled_data_2[train_index_2, ]
+test_data_2 <- oversampled_data_2[-train_index_2, ]
+
+# 使用随机森林模型进行拟合
+rf_model_2 <- randomForest(Attrition ~ ., data = train_data_2)
+
+# 在测试集上进行预测
+predicted_labels_2 <- predict(rf_model_2, test_data_2)
+# 计算模型的准确率
+accuracy_2 <- sum(predicted_labels_2 == test_data_2$Attrition) / nrow(test_data_2)
+accuracy_2
+label_counts <- table(train_data_2$Attrition)
+label_counts
+label_counts_test <- table(test_data_2$Attrition)
+label_counts_test
+```
+
+```{R}
+import_2<-importance(rf_model_2)
+varImpPlot(rf_model_2)
+```
+
+```{R}
+importance_df_2 <- data.frame(Feature = rownames(import_2), Importance = import_2)
+
+sorted_importance_2 <- importance_df_2[order(importance_df_2$MeanDecreaseGini, decreasing = TRUE), ]
+
+
+print(sorted_importance_2)
+```
+
+```{R}
+total_gini <- sum(importance_df_2$MeanDecreaseGini)
+importance_df_2$Percentage <- importance_df_2$MeanDecreaseGini / total_gini * 100
+sorted_importance_2 <- importance_df_2[order(importance_df_2$MeanDecreaseGini, decreasing = TRUE), ]
+top_20_importance <- head(sorted_importance_2, 34)
+
+ggplot(top_20_importance, aes(x = reorder(Feature, Percentage), y = Percentage, fill = Feature)) +
+  geom_bar(stat = "identity",fill='blue') +
+  coord_flip() +  # Flip coordinates to make the chart horizontal
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +  # Format y-axis as percentage
+  labs(title = "", x = "Feature", y = "Importance (%)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+```{R}
+# 使用 ggplot 函数创建图形对象，并指定数据集和x、y映射
+ggplot(sorted_importance_2, aes(x = reorder(Feature, -MeanDecreaseGini), y = MeanDecreaseGini)) +
+  # 添加条形图层，颜色为蓝色
+  geom_bar(stat = "identity", fill = "skyblue") +
+  # 添加标题和标签
+  labs(title = "Feature Importance", x = "Feature", y = "Importance") +
+  # 将x轴标签旋转45度以避免重叠
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{R}
+n=nrow(sorted_importance_2)
+feature=c("Attrition")
+acc_2 <- numeric(0)
+for (i in seq(n-1, 3, by = -1)) {
+    feature_im<-sorted_importance_2$Feature
+    feature=c(feature_im[i:n],feature)
+    
+    x_2_drop<-train_data_2[,!colnames(train_data_2)%in% feature]
+    y_2_drop<-train_data_2$Attrition
+    
+    rf_model <- randomForest(x = x_2_drop, y = y_2_drop)
+    X_test_2_drop <- test_data_2[, !colnames(test_data_2) %in% feature]
+    y_test_2_drop <- test_data_2$Attrition 
+    
+    predictions_2_drop <- predict(rf_model, X_test_2_drop)
+    accuracy_2_drop <- mean(predictions_2_drop == y_test_2_drop)
+    print(paste("Accuracy:", accuracy_2_drop))
+    acc_2<-c(acc_2,accuracy_2_drop)
+}
+```
+
+```{R}
+
+barplot(acc_2, names.arg = 1:length(acc_2), col = "skyblue",
+        main = "Accuracy", xlab = "Number", ylab = "Accuracy",ylim = c(y_lower, y_upper))
+```
+
+```{R}
+df_acc_2 <- data.frame(Index = 1:length(acc_2), Value = acc_2)
+
+ggplot(df_acc_2, aes(x = Index, y = Value)) +
+  geom_line(color = "blue") +  # Draw a line plot
+  geom_point(color = "blue", size = 3) +  # Add points to the plot
+  scale_x_continuous(breaks = df_acc_2$Index) +  # Set x-axis breaks to show all indices
+  labs(title = "",
+       x = "Number of feature",
+       y = "Accuracy") +
+  theme_minimal()
+```
+
+

@@ -1,0 +1,51 @@
+id,Gender,Age,Relationship status,Highest Educational Qualification,Field of Education,Years of working experience,Years within current field of employment,Employee code/number,Job type,Job Location,Seniority Level,Salary,avg Hours worked per week,Value of benefits/allowance provided,Performance Rating,Training/upskilling opportunities provided,Unpaid Overtime hours per week,Employee department,Years in current role,Years with current supervisor,Years since last promotion,number of employee in company,last salary adjustment percentage,average Travel on work percentage,Work-Life balance,employer Recognition/award,Job satisfaction,Company satisfaction
+0,Male,37,Divorced,Doctorate,Life Sciences,7,7,77,Permanent,Hybrid,Mid,5993,36,8334,1,strongly disagree,6,Technical,5,7,0,4761,6.44,47,strongly agree,neutral,neutral,neutral
+1,Female,54,Divorced,Doctorate,Life Sciences,33,5,1245,Contract,On-Site,Executive,10502,33,9186,3,disagree,4,Finance,4,4,1,9499,8.34,33,strongly disagree,strongly agree,neutral,agree
+2,Male,34,Single,Post-graduate,Life Sciences,9,9,147,Permanent,Hybrid,Graduate/intern,6074,42,1279,4,strongly agree,14,HR,7,6,0,1994,5.77,9,neutral,neutral,neutral,strongly disagree
+3,Female,39,Married,School,Life Sciences,21,21,1026,Permanent,Hybrid,Graduate/intern,12742,46,9579,2,disagree,7,HR,6,8,11,7489,6.46,34,neutral,disagree,strongly agree,strongly disagree
+4,Male,28,Divorced,Post-graduate,Medical,1,1,1111,Permanent,On-Site,Graduate/intern,2596,57,5948,1,strongly disagree,8,HR,0,0,0,5022,4.58,10,neutral,strongly disagree,disagree,strongly disagree
+5,Female,24,Married,School,Medical,5,5,1445,Casual/adhoc,On-Site,Graduate/intern,4162,31,7295,5,disagree,6,Finance,4,3,0,6422,5.29,10,neutral,agree,neutral,neutral
+6,Male,29,Single,School,Other,4,3,455,Permanent,Hybrid,Graduate/intern,3983,57,10336,3,disagree,4,HR,2,2,2,3283,0.34,20,neutral,agree,agree,strongly agree
+7,Male,36,Married,Undergraduate,Medical,10,10,513,Contract,Remote,Junior,7596,34,7067,1,strongly agree,0,Management,9,0,9,3897,6.39,20,neutral,disagree,neutral,strongly agree
+8,Female,33,Married,Doctorate,Medical,7,3,305,Casual/adhoc,Hybrid,Executive,2622,41,4436,5,agree,0,HR,2,1,1,5278,0.81,21,neutral,agree,disagree,agree
+9,Female,34,Single,Doctorate,Technical Degree,14,14,1383,Contract,Hybrid,Mid,6687,56,4552,5,strongly disagree,5,Finance,11,11,4,9936,4.35,44,agree,neutral,strongly agree,agree
+10,Male,24,Married,School,Human Resources,1,1,1714,Contract,Hybrid,Mid,1555,50,5222,4,strongly agree,15,Technical,0,0,0,4068,2.93,6,neutral,agree,neutral,neutral
+11,Female,35,Single,Doctorate,Medical,10,5,1587,Fixed-term,Hybrid,Mid,6142,37,6831,4,disagree,0,Operations,2,4,0,2816,5.45,16,neutral,disagree,neutral,strongly agree
+12,Female,30,Single,Post-graduate,Technical Degree,8,5,297,Fixed-term,On-Site,Mid,2657,35,3096,4,disagree,10,Operations,2,4,0,290,1.33,1,neutral,disagree,strongly disagree,strongly disagree
+13,Female,54,Single,Doctorate,Life Sciences,19,1,578,Contract,Hybrid,Junior,3780,37,6697,1,agree,5,HR,0,0,0,1435,6.92,11,neutral,neutral,neutral,strongly agree
+14,Female,34,Married,Post-graduate,Life Sciences,7,5,1447,Permanent,Remote,Senior,3294,47,9982,1,strongly disagree,7,HR,4,2,0,8281,7.95,41,disagree,agree,disagree,strongly disagree
+15,Female,47,Single,Doctorate,Life Sciences,3,3,925,Fixed-term,On-Site,Executive,3294,32,7549,3,strongly disagree,9,Finance,2,2,1,478,1.63,17,disagree,agree,strongly agree,strongly agree
+16,Male,36,Divorced,Doctorate,Marketing,15,15,2036,Casual/adhoc,Remote,Graduate/intern,5406,51,3974,4,neutral,8,Finance,12,11,11,3929,1.04,10,disagree,strongly disagree,strongly agree,disagree
+17,Male,35,Married,Doctorate,Medical,10,8,1172,Contract,Remote,Senior,2258,41,9133,5,strongly disagree,8,Technical,0,7,1,6480,1.46,15,neutral,strongly agree,neutral,agree
+18,Male,29,Divorced,Post-graduate,Life Sciences,10,10,1497,Fixed-term,Remote,Mid,8620,58,11312,2,agree,0,Operations,7,4,0,715,8.77,48,neutral,disagree,neutral,agree
+19,Female,56,Married,Doctorate,Life Sciences,7,5,161,Permanent,Remote,Senior,4963,55,1944,3,neutral,16,Management,4,3,4,2430,5.28,50,neutral,strongly disagree,disagree,disagree
+20,Male,45,Married,Undergraduate,Life Sciences,8,2,544,Permanent,On-Site,Executive,2654,32,7965,1,neutral,7,Finance,2,2,0,1854,4.67,17,disagree,disagree,agree,agree
+21,Male,46,Divorced,Doctorate,Medical,17,4,288,Contract,On-Site,Graduate/intern,9396,51,5940,3,disagree,5,Operations,2,3,0,563,1.07,34,neutral,strongly disagree,strongly disagree,strongly agree
+22,Male,39,Single,School,Medical,9,4,1800,Contract,Remote,Graduate/intern,13464,35,7015,3,disagree,4,Finance,3,2,2,9258,6.5,25,neutral,strongly agree,neutral,strongly agree
+23,Male,52,Married,Doctorate,Marketing,34,34,776,Permanent,Remote,Executive,16856,31,8505,3,strongly disagree,5,Management,6,16,1,4367,8.68,15,agree,strongly disagree,strongly disagree,strongly agree
+24,Female,32,Married,Post-graduate,Life Sciences,5,3,951,Contract,On-Site,Executive,2332,52,9763,3,neutral,5,Technical,0,2,0,3258,8.28,5,neutral,disagree,disagree,agree
+25,Female,46,Married,School,Medical,28,2,624,Contract,On-Site,Mid,10527,41,8392,2,disagree,4,HR,2,2,1,3724,6.26,43,disagree,agree,neutral,strongly agree
+26,Male,28,Divorced,Undergraduate,Medical,10,10,536,Fixed-term,On-Site,Graduate/intern,4558,31,11136,4,agree,1,Technical,0,8,1,5038,0.75,42,neutral,disagree,strongly disagree,disagree
+27,Male,29,Married,Undergraduate,Life Sciences,10,10,824,Fixed-term,Hybrid,Senior,2700,35,7696,5,disagree,0,Technical,7,7,0,5517,1.12,46,neutral,neutral,neutral,agree
+28,Female,39,Married,School,Marketing,21,20,2056,Permanent,Hybrid,Junior,12031,46,5256,3,disagree,4,Technical,9,6,9,6104,0.49,46,disagree,neutral,agree,neutral
+29,Male,33,Married,Post-graduate,Medical,15,14,1238,Casual/adhoc,Hybrid,Junior,2781,32,5313,3,neutral,5,Finance,10,10,4,8981,2.57,47,neutral,neutral,strongly agree,agree
+30,Male,38,Divorced,Post-graduate,Life Sciences,17,16,307,Permanent,Remote,Executive,10609,31,9968,3,neutral,5,Management,10,13,5,5703,1.36,41,disagree,neutral,neutral,agree
+31,Female,27,Single,Undergraduate,Life Sciences,6,5,1850,Fixed-term,Hybrid,Mid,2379,52,9514,4,strongly agree,8,HR,4,2,0,2312,2.6,11,disagree,strongly agree,strongly agree,agree
+32,Female,19,Single,School,Technical Degree,1,0,235,Permanent,Remote,Junior,2325,59,4731,1,agree,19,HR,0,0,0,6220,3.85,12,agree,agree,strongly disagree,strongly agree
+33,Female,54,Married,Post-graduate,Technical Degree,22,10,1013,Fixed-term,Remote,Graduate/intern,10739,49,7080,1,neutral,4,Finance,7,8,0,5918,9.43,3,neutral,agree,neutral,strongly agree
+34,Female,53,Single,Doctorate,Life Sciences,33,12,901,Fixed-term,Hybrid,Executive,14275,37,7153,2,strongly disagree,4,HR,9,8,3,482,6.1,38,neutral,disagree,strongly agree,agree
+35,Female,33,Single,School,Life Sciences,3,2,1044,Contract,Remote,Senior,2342,51,5996,1,agree,7,Management,2,2,2,2356,8.35,1,disagree,strongly disagree,strongly agree,strongly agree
+36,Male,29,Married,Post-graduate,Medical,10,0,366,Contract,Hybrid,Executive,6644,41,4679,3,agree,6,Finance,0,0,0,1512,7.1,25,neutral,disagree,disagree,strongly agree
+37,Male,33,Single,Post-graduate,Life Sciences,10,10,702,Contract,Hybrid,Senior,3348,55,2395,3,neutral,18,Operations,8,7,9,9875,1.13,26,neutral,disagree,strongly disagree,neutral
+38,Male,42,Married,Post-graduate,Life Sciences,10,9,836,Contract,On-Site,Executive,4434,33,5593,3,agree,7,Operations,8,8,7,6246,7.36,26,disagree,disagree,disagree,strongly agree
+39,Male,34,Married,Doctorate,Technical Degree,8,8,1597,Contract,Hybrid,Executive,5063,34,4727,2,neutral,4,Operations,2,7,7,471,2.75,14,disagree,disagree,neutral,neutral
+40,Male,42,Married,Undergraduate,Marketing,21,1,1029,Casual/adhoc,On-Site,Executive,18303,42,9158,3,disagree,4,Finance,0,0,0,5906,6.39,7,strongly agree,agree,neutral,strongly agree
+41,Male,26,Married,Post-graduate,Life Sciences,8,8,476,Fixed-term,Hybrid,Senior,5296,58,8065,1,strongly agree,6,Technical,7,7,7,5665,3.41,6,neutral,strongly disagree,neutral,agree
+42,Male,55,Divorced,Doctorate,Medical,31,7,1424,Casual/adhoc,Hybrid,Senior,14732,60,6571,4,disagree,3,Finance,7,0,0,8902,9.98,46,agree,disagree,agree,strongly agree
+43,Male,50,Divorced,Doctorate,Life Sciences,12,6,2044,Fixed-term,On-Site,Executive,6728,44,3109,4,neutral,10,Finance,3,1,0,8407,2.64,45,neutral,agree,neutral,agree
+44,Male,37,Married,Doctorate,Medical,16,5,1885,Fixed-term,On-Site,Junior,4284,54,6901,5,neutral,6,Finance,3,4,0,7537,2.79,39,neutral,disagree,strongly disagree,strongly agree
+45,Male,45,Married,Post-graduate,Marketing,10,10,1612,Permanent,Hybrid,Mid,4385,52,8542,1,disagree,8,Finance,7,5,4,546,9.31,11,neutral,neutral,strongly disagree,strongly agree
+46,Male,43,Married,Post-graduate,Life Sciences,7,2,754,Contract,Remote,Mid,6804,45,6027,3,strongly disagree,7,Finance,2,2,2,1491,0.25,12,neutral,disagree,strongly agree,agree
+47,Male,39,Married,Post-graduate,Technical Degree,19,1,42,Contract,On-Site,Mid,2086,39,1767,4,strongly disagree,13,Finance,0,0,0,1440,6.97,42,strongly agree,disagree,agree,neutral
+48,Male,38,Single,Undergraduate,Marketing,10,1,1125,Fixed-term,Remote,Senior,7351,59,7253,1,strongly disagree,0,Technical,0,0,0,3039,7.25,16,neutral,strongly agree,disagree,agree
+49,Male,31,Single,Doctorate,Medical,1,1,95,Fixed-term,Remote,Senior,2501,59,8170,4,neutral,5,Technical,1,0,1,6069,8.36,16,neutral,neutral,disagree,agree

@@ -1,0 +1,420 @@
+---
+title: "Mast90106"
+author: "junheng YU"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r }
+data_1 <- read.csv(file="D:/MAST90106/pythonProject/train.csv")
+head(data_1)
+```
+
+```{R}
+data_2<-read.csv(file='./WA_Fn-UseC_-HR-Employee-Attrition.csv')
+
+
+```
+
+```{R}
+install.packages("gridExtra")
+library(gridExtra)
+```
+
+```{R}
+library(ggplot2)
+
+ggplot(data, aes(x = MonthlyIncome, fill = factor(Label))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Label by Income",
+       x = "Income",
+       y = "Density",
+       fill = "Label") +
+  scale_fill_manual(values = c("blue", "red"))
+```
+
+```{R}
+
+ggplot(data, aes(x = YearsAtCompany, y = MonthlyIncome, color = factor(Label))) +
+  geom_point() +
+  geom_line(stat = "summary", fun = "mean", aes(group = 1), color = "black", size = 1) + 
+  labs(title = "Relationship between Years at Company, Monthly Income, and Label",
+       x = "Years at Company",
+       y = "Monthly Income",
+       color = "Label") +
+  scale_color_manual(values = c("blue", "red")) +
+  theme(legend.position = "bottom") 
+
+```
+
+```{R}
+ggplot(data, aes(x = StockOptionLevel, color = factor(Label))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Daily Rate by Label",
+       x = "StockOptionLevel",
+       y = "Density",
+       color = "Label") +
+  scale_color_manual(values = c("blue", "red")) 
+```
+
+```{R}
+ggplot(data, aes(x = TotalWorkingYears, color = factor(Label))) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of TotalWorkingYears by Label",
+       x = "TotalWorkingYears",
+       y = "Density",
+       color = "Label") +
+  scale_color_manual(values = c("blue", "red")) 
+```
+
+```{R}
+
+table_data <- as.data.frame(table(data$TotalWorkingYears, data$Label))
+
+names(table_data) <- c("TotalWorkingYears", "Label", "Count")
+
+
+total_count <- aggregate(Count ~ TotalWorkingYears, data = table_data, sum)
+table_data <- merge(table_data, total_count, by = "TotalWorkingYears")
+table_data
+table_data$Percentage <- table_data$Count.x / table_data$Count.y 
+
+
+library(ggplot2)
+
+ggplot(table_data, aes(x = TotalWorkingYears, y = Percentage, fill = as.factor(Label))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Percentage of Label by Total Working Years",
+       x = "Total Working Years",
+       y = "Label Percentage",
+       fill = "Label") +
+  scale_fill_manual(values = c("blue", "red")) +
+  scale_y_continuous(labels = scales::percent_format())
+```
+
+```{R}
+ggplot(data, aes(x = OverTime, y = Age, fill = factor(Label))) +
+  geom_boxplot() +
+  labs(x = "Overtime", y = "Age", fill = "Label") +
+  ggtitle("Relationship between Overtime, Label, and Age")
+
+```
+
+```{R}
+ggplot(data, aes(x = TotalWorkingYears, y = Age, color = factor(Label))) +
+  geom_point() +
+  labs(x = "Total Work Year", y = "Age", color = "Label") +
+  ggtitle("Relationship between Total Work Year, Label, and Age")
+
+
+ggplot(data, aes(x = TotalWorkingYears, y = Age, color = factor(Label))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + 
+  labs(x = "Total Work Year", y = "Age", color = "Label") +
+  ggtitle("Relationship between Total Work Year, Label, and Age")
+```
+
+Rf model
+
+```{R}
+
+library(randomForest)
+```
+
+```{R}
+set.seed(123)
+train_index <- sample(1:nrow(data), 0.8 * nrow(data))
+train_data_1 <- data_1[train_index, ]
+test_data_1 <- data_1[-train_index, ]
+
+
+
+X_1 <- train_data_1[, -ncol(train_data_1)]  
+y_1 <- train_data_1$Label 
+
+X_test_1 <- test_data_1[, -ncol(test_data_1)]  
+y_test_1 <- test_data_1$Label 
+```
+
+```{R}
+rf_model_1 <- randomForest(x = X_1, y = y_1,type = "classification")
+import_1<-importance(rf_model_1)
+varImpPlot(rf_model_1)
+
+```
+
+```{R}
+importance_df_1 <- data.frame(Feature = rownames(import_1), Importance = import_1)
+
+
+sorted_importance_1 <- importance_df_1[order(importance_df_1$IncNodePurity, decreasing = TRUE), ]
+
+
+print(sorted_importance_1)
+nrow(sorted_importance_1)
+```
+
+```{R}
+predictions_1 <- predict(rf_model_1, X_test_1)
+predictions_1 <- ifelse(predictions_1 > 0.5, 1, 0)
+accuracy_1 <- mean(predictions_1 == y_test_1)
+print(paste("Accuracy:", accuracy_1))
+```
+```{R}
+train_data_1 <- data_1[train_index, ]
+test_data_1 <- data_1[-train_index, ]
+
+
+x_1_drop<-train_data_1[,!colnames(train_data_1)%in% c("Over18","StandardHours")]
+y_1_drop<-train_data_1$Label
+
+n=nrow(sorted_importance_1)
+feature=c("Label")
+sorted_importance_1$Feature
+acc <- numeric(0)
+for (i in seq(n-1, 3, by = -1)) {
+    feature_im<-sorted_importance_1$Feature
+    feature=c(feature_im[i:n],feature)
+    
+    x_1_drop<-train_data_1[,!colnames(train_data_1)%in% feature]
+    y_1_drop<-train_data_1$Label
+    
+    rf_model <- randomForest(x = x_1_drop, y = y_1_drop,type = "classification")
+    X_test_1_drop <- test_data_1[, !colnames(test_data_1) %in% feature]
+    y_test_1_drop <- test_data_1$Label 
+    
+    predictions_1_drop <- predict(rf_model, X_test_1_drop)
+    predictions_1_drop <- ifelse(predictions_1_drop > 0.5, 1, 0)
+    accuracy_1_drop <- mean(predictions_1_drop == y_test_1_drop)
+    print(paste("Accuracy:", accuracy_1_drop))
+    acc<-c(acc,accuracy_1_drop)
+}
+
+```
+```{R}
+library(ggplot2)
+```
+
+```{R}
+acc_df_1 <- data.frame(
+  Index = 1:length(acc),
+  Value = acc
+)
+y_min <- min(acc)
+y_max <- max(acc)
+y_range <- y_max - y_min
+y_lower <- y_min - 0.01*y_range
+y_upper <- y_max + 0.01*y_range
+acc_df_1
+```
+
+```{R}
+
+barplot(acc, names.arg = 1:length(acc), col = "skyblue",
+        main = "Accuracy", xlab = "Number", ylab = "Accuracy",ylim = c(y_lower, y_upper))
+```
+
+```{R}
+set.seed(123)
+data_2$Attrition <- ifelse(data_2$Attrition == "Yes", 1, 0)
+
+train_index <- sample(1:nrow(data_2), 0.8 * nrow(data_2))
+train_data_2 <- data_2[train_index, ]
+test_data_2 <- data_2[-train_index, ]
+
+
+
+X_2 <- train_data_2[, !colnames(train_data_2) %in% c("Attrition")]
+y_2 <- train_data_2$Attrition 
+
+X_test_2 <- test_data_2[, !colnames(test_data_2) %in% c("Attrition")]
+y_test_2 <- test_data_2$Attrition 
+
+```
+
+```{R}
+
+#X <- data_2[, !colnames(data_2) %in% c("Attrition")]
+rf_model_2 <- randomForest(x = X_2, y = y_2)
+import_2=importance(rf_model_2)
+varImpPlot(rf_model_2)
+```
+
+```{R}
+predictions_2 <- predict(rf_model_2, X_test_2)
+predictions_2 <- ifelse(predictions_2 > 0.5, 1, 0)
+accuracy <- mean(predictions_2 == y_test_2)
+print(paste("Accuracy:", accuracy_2))
+```
+
+```{R}
+importance_df_2 <- data.frame(Feature = rownames(import_2), Importance = import_2)
+
+
+sorted_importance_2 <- importance_df_2[order(importance_df_2$IncNodePurity, decreasing = TRUE), ]
+
+
+print(sorted_importance_2)
+```
+
+```{R}
+set.seed(123)
+data_2$Attrition <- ifelse(data_2$Attrition == "Yes", 1, 0)
+
+train_index <- sample(1:nrow(data_2), 0.8 * nrow(data_2))
+train_data_2 <- data_2[train_index, ]
+test_data_2 <- data_2[-train_index, ]
+
+features_to_remove <- c("Attrition", "StandardHours", "Over18",'EmployeeCount')
+
+X_2 <- train_data_2[, !colnames(train_data_2) %in% features_to_remove]
+y_2 <- train_data_2$Attrition 
+
+X_test_2 <- test_data_2[, !colnames(test_data_2) %in% features_to_remove]
+y_test_2 <- test_data_2$Attrition 
+
+
+```
+
+```{R}
+rf_model_2 <- randomForest(x = X_2, y = y_2)
+predictions <- predict(rf_model_2, X_test_2)
+predictions <- ifelse(predictions > 0.5, 1, 0)
+accuracy <- mean(predictions == y_test_2)
+print(paste("Accuracy:", accuracy))
+```
+
+```{R}
+n=nrow(sorted_importance_2)
+feature=c("Attrition")
+acc_2 <- numeric(0)
+for (i in seq(n-1, 3, by = -1)) {
+    feature_im<-sorted_importance_2$Feature
+    feature=c(feature_im[i:n],feature)
+    
+    x_2_drop<-train_data_2[,!colnames(train_data_2)%in% feature]
+    y_2_drop<-train_data_2$Attrition
+    
+    rf_model <- randomForest(x = x_2_drop, y = y_2_drop,type = "classification")
+    X_test_2_drop <- test_data_2[, !colnames(test_data_2) %in% feature]
+    y_test_2_drop <- test_data_2$Attrition
+    
+    predictions_2_drop <- predict(rf_model, X_test_2_drop)
+    predictions_2_drop <- ifelse(predictions_2_drop > 0.5, 1, 0)
+    accuracy_2_drop <- mean(predictions_2_drop == y_test_2_drop)
+    print(y_test_2_drop)
+    print(paste("Accuracy:", accuracy_2_drop))
+    acc_2<-c(acc_2,accuracy_2_drop)
+}
+acc_2
+```
+
+
+```{R}
+acc_df_2 <- data.frame(
+  Index = 1:length(acc_2),
+  Value = acc_2
+)
+y_min <- min(acc_2)
+y_max <- max(acc_2)
+y_range <- y_max - y_min
+y_lower <- y_min - 0.01*y_range
+y_upper <- y_max + 0.01*y_range
+acc_df_2
+```
+
+```{R}
+
+barplot(acc_2, names.arg = 1:length(acc_2), col = "skyblue",
+        main = "Accuracy", xlab = "Number", ylab = "Accuracy",ylim = c(y_lower, y_upper))
+```
+
+```{R}
+set.seed(123)
+data_1$over18_numeric  <- as.numeric(data_1$Over18 == "Y")
+data_1<-data_1[,!(names(data_1) %in% c("over18_numeric","StandardHours"))]
+# 拆分数据集
+train_indices <- sample(1:nrow(data_1), 0.7*nrow(data_1))  # 70% 的数据作为训练集
+train_data <- data_1[train_indices, ]
+test_data <- data_1[-train_indices, ]
+
+# 拟合逻辑回归模型
+logistic_model <-glm(Label~Age+factor(BusinessTravel)+factor(Department)+DistanceFromHome+Education+factor(EducationField)+EmployeeNumber+EnvironmentSatisfaction+factor(Gender)+JobInvolvement+JobLevel+factor(JobRole)+JobSatisfaction+factor(MaritalStatus)+MonthlyIncome+NumCompaniesWorked+factor(OverTime)+PercentSalaryHike+PerformanceRating+RelationshipSatisfaction+StockOptionLevel+TotalWorkingYears+TrainingTimesLastYear+WorkLifeBalance+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager,family=binomial,data=data_1)
+
+# 检查模型摘要
+summary(logistic_model)
+
+# 对测试集进行预测
+predictions <- predict(logistic_model, newdata = test_data, type = "response")
+
+# 将预测结果转换为二分类（例如，大于0.5为1，小于等于0.5为0）
+predicted_classes <- ifelse(predictions > 0.5, 1, 0)
+predicted_classes
+
+# 计算准确率
+accuracy <- mean(predicted_classes == test_data$Label)
+cat("Accuracy:", accuracy, "\n")
+```
+
+```{R}
+
+#X <- data_2[, !colnames(data_2) %in% c("Attrition")]
+rf_model_2 <- randomForest(x = X_2, y = y_2)
+import_2=importance(rf_model_2)
+varImpPlot(rf_model_2)
+```
+
+```{R}
+library(ggplot2)
+ggplot(data, aes(x = Age, fill = factor(Label), color = MonthlyIncome)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Age by Label and Income",
+       x = "Age",
+       y = "Density",
+       fill = "Label",
+       color = "Income") +
+  scale_fill_manual(values = c("blue", "red")) + 
+  scale_color_manual(values = c("green", "purple")) 
+```
+
+```{r cars}
+data_1$over18_numeric  <- as.numeric(data_1$Over18 == "Y")
+data
+```
+
+```{R}
+model=glm(Label~Age+factor(BusinessTravel)+factor(Department)+DistanceFromHome+Education+factor(EducationField)+EmployeeNumber+EnvironmentSatisfaction+factor(Gender)+JobInvolvement+JobLevel+factor(JobRole)+JobSatisfaction+factor(MaritalStatus)+MonthlyIncome+NumCompaniesWorked+factor(Over18)+factor(OverTime)+PercentSalaryHike+PerformanceRating+RelationshipSatisfaction+StandardHours+StockOptionLevel+TotalWorkingYears+TrainingTimesLastYear+WorkLifeBalance+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager,family=binomial,data=data_1)
+summary(model)
+```
+
+```{R}
+model=glm(Label~Age+factor(BusinessTravel)+factor(Department)+DistanceFromHome+Education+factor(EducationField)+EmployeeNumber+EnvironmentSatisfaction+factor(Gender)+JobInvolvement+JobLevel+factor(JobRole)+JobSatisfaction+factor(MaritalStatus)+MonthlyIncome+NumCompaniesWorked+factor(OverTime)+PercentSalaryHike+PerformanceRating+RelationshipSatisfaction+StockOptionLevel+TotalWorkingYears+TrainingTimesLastYear+WorkLifeBalance+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager,family=binomial,data=data)
+summary(model)
+```
+
+```{R}
+model1=step(model)
+```
+
+```{R}
+anova(model1, test="Chi")
+```
+
+```{R}
+summary(model1)
+```
+
+```{R}
+model2=glm(formula = Label ~ (Age + factor(BusinessTravel) + factor(Department) + 
+    DistanceFromHome + factor(EducationField) + EmployeeNumber + 
+    EnvironmentSatisfaction + factor(Gender) + JobInvolvement + 
+    JobLevel + JobSatisfaction + factor(MaritalStatus) + NumCompaniesWorked + 
+    factor(OverTime) + RelationshipSatisfaction + TotalWorkingYears + 
+    TrainingTimesLastYear + WorkLifeBalance + YearsAtCompany + 
+    YearsInCurrentRole + YearsSinceLastPromotion + YearsWithCurrManager)^2, 
+    family = binomial, data = data)
+```
+
+```{R}
+model3=step(model2)
+```

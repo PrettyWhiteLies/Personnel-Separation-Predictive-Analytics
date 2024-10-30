@@ -1,0 +1,109 @@
+---
+title: "R_i"
+author: "junheng YU"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+
+```{r}
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("reshape2")
+```
+
+```{R}
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+
+```
+
+```{r}
+#Attrition
+data_1=read.csv('D:/MAST90106/R_analysis/WA_Fn-UseC_-HR-Employee-Attrition.csv')
+#Label
+data_2=read.csv('D:/MAST90106/R_analysis/train.csv')
+```
+
+```{r}
+data_1_y=data_1['Attrition']
+data_2_y=data_2['Label']
+
+data_1_x <- data_1[, !(names(data_1) %in% c("Attrition"))]
+data_2_x <- data_2[, !(names(data_2) %in% c("Label"))]
+```
+
+
+```{R}
+data_1_x$OverTime=ifelse(data_1_x$OverTime == "yes", 1, 0)
+```
+
+# 1.Overtime
+```{R}
+overtimetable=table(data_2$Label, data_2$OverTime)
+overtimetable
+overtimetable_df=as.data.frame(overtimetable)
+overtimetable_df_long <- melt(overtimetable_df, id.vars = c("Var1", "Var2"), value.name = "Count")
+
+ggplot(overtimetable_df_long, aes(x = Var1, y = Count, fill = Var2)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Attrition vs. OverTime", x = "Attrition", y = "Count")
+```
+
+
+# 2.Age
+```{R}
+ggplot(data_2, aes(x = data_2_x$Age)) +
+  geom_histogram(binwidth = 5, fill = "blue", color = "black", alpha = 0.7) +
+  theme_minimal() +
+  labs(title = "Age Distribution", x = "Age", y = "Count")
+```
+
+```{R}
+data_percent <- data_2 %>%
+  group_by(Age, Label) %>%
+  summarise(Count = n()) %>%
+  mutate(Percent = Count / sum(Count) * 100)
+
+ggplot(data_percent, aes(x = Age, y = Percent, fill = Label)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Age vs. Attrition (Percentage)", x = "Age", y = "Percentage", fill = "Attrition")
+
+```
+# 3.Income
+```{R}
+data_2$IncomeGroup <- cut(data_2$MonthlyIncome, breaks = seq(0, 10000, by = 2000), include.lowest = TRUE)
+data_percent_income <- data_2 %>%
+  group_by(IncomeGroup, Label) %>%
+  summarise(Count = n()) %>%
+  group_by(IncomeGroup) %>%
+  mutate(Percent = Count / sum(Count) * 100)
+
+ggplot(data_percent_income, aes(x = IncomeGroup, y = Percent, fill = Label)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Percentage of Attrition by Monthly Income", x = "Income Group", y = "Percentage", fill = "Attr
+       ition")
+```
+# 4.Total work year
+```{R}
+data_2$Label=as.factor(data_2$Label)
+ggplot(data_2, aes(x = TotalWorkingYears, fill = Label)) +
+  geom_histogram(position = "dodge", binwidth = 1) +
+  theme_minimal() +
+  labs(title = "Total Working Years Distribution by Attrition", x = "Total Working Years", y = "Count", fill = "Attrition")
+```
+# 5.EmployeeNumber
+
+```{R}
+
+ggplot(data_1, aes(x = EmployeeNumber, y = Attrition, color = Attrition)) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0.7) +  
+  scale_color_manual(values = c("Yes" = "red", "No" = "blue")) + 
+  theme_minimal() +
+  labs(title = "Employee Number vs. Attrition", x = "Employee Number", y = "Attrition")
+```
+

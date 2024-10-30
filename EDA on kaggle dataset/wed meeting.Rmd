@@ -1,0 +1,181 @@
+---
+title: "wed meeting2"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+date: "2024-04-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+employee_data <- read.csv("train.csv")
+
+str(employee_data)
+
+head(employee_data)
+
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(employee_data, aes(x = Age, y = MonthlyIncome)) +
+  geom_point() +
+  labs(title = "age and monthly income",
+       x = "age",
+       y = "monthly income")
+
+```
+From this scatter plot, we can observe the general trend between employee age and monthly income. If the scatter plot exhibits a clear trend, such as an increase in monthly income with age, or any other specific pattern, we can draw some preliminary conclusions about the relationship between these two variables. Additionally, we can identify interesting situations by observing outliers or clusters in the scatter plot, such as a particular age group of employees having generally higher or lower monthly incomes. However, it's important to note that the scatter plot is just a preliminary exploratory analysis tool, providing a visual way to understand the relationship between variables. It may not always provide precise quantitative conclusions, so further statistical analysis is needed to validate the observed relationships.
+
+```{r}
+ggplot(employee_data, aes(x = MonthlyIncome)) +
+  geom_histogram(binwidth = 1000, fill = "skyblue", color = "black") +
+  labs(title = "distribution of income",
+       x = "monthly income",
+       y = "")
+```
+A histogram is used to display the distribution of a single continuous variable. In this histogram, the x-axis represents the monthly income, while the y-axis represents the frequency (i.e., the number of employees within specific income ranges). Each bar's height represents the number of employees within that income range.
+
+```{r}
+ggplot(employee_data, aes(x = "", y = MonthlyIncome)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(title = "Boxplot of Employee Monthly Income",
+       x = "",
+       y = "Monthly Income")
+```
+A boxplot is used to display the distribution and dispersion of a continuous variable. The top and bottom of the box represent the third quartile (Q3) and first quartile (Q1) of the data, respectively. The line inside the box represents the median (Q2), while the upper and lower whiskers extend to the maximum and minimum values, respectively. Outliers are represented as points beyond the whiskers.
+
+```{r}
+gender_proportions <- table(employee_data$Gender)
+
+pie(gender_proportions, labels = c("Female", "Male"), col = c("skyblue", "lightgreen"),
+    main = "Employee Gender Proportions")
+```
+ A pie chart is used to display the proportions of categories within a categorical variable. In this pie chart, different colors represent the proportions of female and male employees.
+ 
+```{r}
+department_counts <- table(employee_data$Department)
+
+barplot(department_counts, col = "skyblue", main = "Employee Department Counts",
+        xlab = "Department", ylab = "Count")
+```
+ A bar chart is used to display the counts of categories within a categorical variable. In this bar chart, each bar represents a department, and the height of the bar represents the number of employees in that department.
+ 
+```{r}
+ggplot(employee_data, aes(x = YearsAtCompany, y = YearsSinceLastPromotion)) +
+  geom_line(color = "blue") +
+  labs(title = "Relationship between Years at Company and Years Since Last Promotion",
+       x = "Years at Company",
+       y = "Years Since Last Promotion")
+```
+ A line plot is used to display the relationship between two continuous variables. In this line plot, the x-axis represents employees' years at the company, while the y-axis represents the years since their last promotion. By observing the trend of the line, we can understand if there is any correlation or pattern between the years at the company and years since the last promotion.
+ 
+```{r}
+library(ggplot2)
+library(reshape2)
+
+
+correlation_matrix <- cor(employee_data[, c("Age", "MonthlyIncome", "YearsAtCompany", "YearsSinceLastPromotion")])
+
+
+ggplot(melt(correlation_matrix), aes(Var1, Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  labs(title = "Heatmap of Employee Correlation",
+       x = "Variable",
+       y = "Variable")
+```
+ A heatmap visually represents the correlation between different attributes of employees. Darker colors indicate stronger correlations.
+ 
+```{r}
+library(VennDiagram)
+
+venn.plot <- venn.diagram(
+  x = list(Department = unique(employee_data$Department), Overtime = unique(employee_data$OverTime)),
+  category.names = c("Department", "Overtime"),
+  filename = NULL
+)
+grid.draw(venn.plot)
+print(venn.plot)
+unique_department <- unique(employee_data$Department)
+unique_overtime <- unique(employee_data$OverTime)
+
+length(unique_department)
+length(unique_overtime)
+```
+ A Venn diagram demonstrates the overlap and uniqueness between different categories, such as employee departments and overtime status.
+However， 
+ 
+it seems that they haven't been correctly rendered. The [1] 3 and [1] 2 indicate the number of unique values for "Department" and "Overtime," respectively.
+
+However, these quantities seem too small to generate a meaningful Venn diagram. Venn diagrams are typically used to visualize the overlap or intersection between different groups or categories. If there is no overlap between the two groups or if the overlap is too small to be displayed in the diagram, then the Venn diagram won't present meaningful results.
+
+If we wish to generate a meaningful Venn diagram, it's advisable to ensure that there is sufficient overlap between the "Department" and "Overtime" categories in wer data. we may need to review the intersection between these categories in your data and adjust either the data or the parameters of the plot accordingly to ensure that the overlap is displayed in the diagram.
+ 
+ 
+```{r}
+
+library(GGally)
+
+
+employee_attributes <- employee_data[, c("Age", "MonthlyIncome", "YearsAtCompany", "YearsSinceLastPromotion")]
+
+
+ggparcoord(employee_attributes, columns = 1:4, groupColumn = NULL,
+           title = "Parallel Coordinates Plot of Employee Attributes", showPoints = TRUE)
+```
+ A parallel coordinates plot illustrates the relationship between different attributes of employees, such as age, monthly income, years at the company, and years since the last promotion. Each line represents an employee, and the position along different axes indicates the value of each attribute.
+ 
+```{r}
+library(plotly)
+
+
+plot_ly(employee_data, x = ~Age, y = ~MonthlyIncome, z = ~YearsAtCompany, 
+        color = ~Gender, colors = c("blue", "pink")) %>%
+  add_markers() %>%
+  layout(title = "3D Scatter Plot of Employee Age, Monthly Income, and Years at Company",
+         scene = list(xaxis = list(title = "Age"),
+                      yaxis = list(title = "Monthly Income"),
+                      zaxis = list(title = "Years at Company")))
+
+```
+A scatter plot is used to display the relationship between two continuous variables. In this scatter plot, the x-axis represents the age of employees, while the y-axis represents their monthly income. Each point represents an employee, and its position is determined by their age and monthly income.
+
+ 
+```{r}
+education_counts <- table(employee_data$EducationField)
+
+
+barplot(education_counts, col = "skyblue", main = "Employee Count by Education Field",
+        xlab = "Education Field", ylab = "Count")
+```
+This bar chart displays the count of employees in different Education fields. Each bar represents an Education field, and the height of the bar represents the number of employees with that Education field.
+
+```{r}
+ggplot(employee_data, aes(x = "", y = Education)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(title = "Boxplot of Employee Education Levels",
+       x = "",
+       y = "Education Level")
+```
+This boxplot displays the distribution and dispersion of Education levels among employees. The top and bottom of the box represent the third quartile (Q3) and first quartile (Q1) of the data, respectively. The line inside the box represents the median (Q2), while the upper and lower whiskers extend to the maximum and minimum values, respectively.
+
+```{r}
+ggplot(employee_data, aes(x = Education, y = MonthlyIncome)) +
+  geom_line(color = "blue") +
+  labs(title = "Trend between Education and Monthly Income",
+       x = "Education Level",
+       y = "Monthly Income")
+```
+This line plot shows the trend between Education levels and Monthly Income. The x-axis represents Education levels, while the y-axis represents Monthly Income. By observing the trend of the line, we can understand if there is any correlation or pattern between Education levels and Monthly Income.
